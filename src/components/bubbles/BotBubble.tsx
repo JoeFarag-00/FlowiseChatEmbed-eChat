@@ -38,6 +38,20 @@ const defaultTextColor = '#303235';
 const defaultFontSize = 16;
 const defaultFeedbackColor = '#3B81F6';
 
+// Helper function to determine text direction based on the first character
+const getTextDirection = (text: string): 'rtl' | 'ltr' => {
+  if (!text || text.length === 0) {
+    return 'ltr'; // Default to LTR if empty or null
+  }
+  // Check if the first character is within the Arabic Unicode range
+  const firstChar = text.charCodeAt(0);
+  // Basic Arabic range U+0600 to U+06FF
+  if (firstChar >= 0x0600 && firstChar <= 0x06ff) {
+    return 'rtl';
+  }
+  return 'ltr';
+};
+
 export const BotBubble = (props: Props) => {
   let botMessageEl: HTMLDivElement | undefined;
   let botDetailsEl: HTMLDetailsElement | undefined;
@@ -50,6 +64,8 @@ export const BotBubble = (props: Props) => {
   const [copiedMessage, setCopiedMessage] = createSignal(false);
   const [thumbsUpColor, setThumbsUpColor] = createSignal(props.feedbackColor ?? defaultFeedbackColor); // default color
   const [thumbsDownColor, setThumbsDownColor] = createSignal(props.feedbackColor ?? defaultFeedbackColor); // default color
+
+  const messageDirection = () => getTextDirection(props.message.message);
 
   const downloadFile = async (fileAnnotation: any) => {
     try {
@@ -377,11 +393,13 @@ export const BotBubble = (props: Props) => {
               ref={botMessageEl}
               class="px-4 py-2 ml-2 max-w-full chatbot-host-bubble prose"
               data-testid="host-bubble"
+              dir={messageDirection()}
               style={{
                 'background-color': props.backgroundColor ?? defaultBackgroundColor,
                 color: props.textColor ?? defaultTextColor,
                 'border-radius': '6px',
                 'font-size': props.fontSize ? `${props.fontSize}px` : `${defaultFontSize}px`,
+                'text-align': messageDirection() === 'rtl' ? 'right' : 'left',
               }}
             />
           )}
