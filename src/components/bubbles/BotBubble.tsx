@@ -393,13 +393,14 @@ export const BotBubble = (props: Props) => {
               ref={botMessageEl}
               class="px-4 py-2 ml-2 max-w-full chatbot-host-bubble prose"
               data-testid="host-bubble"
-              dir={messageDirection()}
+              dir="auto"
               style={{
                 'background-color': props.backgroundColor ?? defaultBackgroundColor,
                 color: props.textColor ?? defaultTextColor,
                 'border-radius': '6px',
                 'font-size': props.fontSize ? `${props.fontSize}px` : `${defaultFontSize}px`,
                 'text-align': messageDirection() === 'rtl' ? 'right' : 'left',
+                direction: messageDirection(),
               }}
             />
           )}
